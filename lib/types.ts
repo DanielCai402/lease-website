@@ -76,7 +76,7 @@ export interface Listing {
   // Room-specific (only when rentalType === 'room')
   roommatesCount?: number;
   roommatesGender?: RoommateGender;
-  sharedBathrooms?: number;
+  sharedBathroom?: 'shared' | 'private';
   hasPartition?: boolean; // living room only
   hasWindow?: boolean;    // living room only
 

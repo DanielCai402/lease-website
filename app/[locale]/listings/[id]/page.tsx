@@ -5,6 +5,7 @@ import { listings, getListingById } from '@/lib/data';
 import { routing } from '@/i18n/routing';
 import MediaGallery from '@/components/MediaGallery';
 import ContactCard from '@/components/ContactCard';
+import ReportButton from '@/components/ReportButton';
 import { shortDate } from '@/lib/utils';
 
 export function generateStaticParams() {
@@ -64,13 +65,16 @@ export default async function ListingPage({
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 pb-28 lg:pb-10">
-      {/* Back */}
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[#111111] transition-colors mb-6"
-      >
-        ← {t('back')}
-      </Link>
+      {/* Back + Report */}
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[#111111] transition-colors"
+        >
+          ← {t('back')}
+        </Link>
+        <ReportButton />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
 
@@ -100,8 +104,8 @@ export default async function ListingPage({
             </div>
 
             {/* Dates */}
-            <p className="text-sm text-zinc-500">
-              {t('availableLabel')}：{shortDate(listing.availableFrom)} – {shortDate(listing.availableTo)}
+            <p className="text-base text-gray-900">
+              <span className="font-medium">{t('availableLabel')}：</span>{shortDate(listing.availableFrom)} – {shortDate(listing.availableTo)}
               {listing.flexibleDates && (
                 <span className="ml-2 text-xs text-blue-500 font-medium border border-blue-200 bg-blue-50 px-1.5 py-0.5 rounded">
                   {t('flexible')}
@@ -155,34 +159,64 @@ export default async function ListingPage({
           {/* Roommate section (room rental only) */}
           {listing.rentalType === 'room' && (
             <section className="mt-6 pt-6 border-t border-zinc-100">
-              <h2 className="text-base font-semibold text-[#111111] mb-3">{t('roommatesTitle')}</h2>
-              <p className="text-sm text-zinc-600">
-                {[
-                  listing.roommatesCount ? `${listing.roommatesCount} ${t('roommatesTotal')}` : null,
-                  listing.roommatesGender ? genderLabel : null,
-                  listing.sharedBathrooms ? `${listing.sharedBathrooms} ${t('sharedBaths')}` : null,
-                ].filter(Boolean).join(' · ')}
-              </p>
+              <h2 className="text-base font-semibold text-[#111111] mb-4">{t('roommatesTitle')}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-              {/* Living room extras */}
-              {listing.roomType === 'living' && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    listing.hasPartition
-                      ? 'bg-green-50 text-green-700'
-                      : 'bg-zinc-100 text-zinc-500'
-                  }`}>
-                    {listing.hasPartition ? `✓ ${t('hasPartition')}` : `✗ ${t('noPartition')}`}
-                  </span>
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                    listing.hasWindow
-                      ? 'bg-green-50 text-green-700'
-                      : 'bg-zinc-100 text-zinc-500'
-                  }`}>
-                    {listing.hasWindow ? `✓ ${t('hasWindow')}` : `✗ ${t('noWindow')}`}
-                  </span>
-                </div>
-              )}
+                {listing.roommatesCount && (
+                  <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
+                    <span className="text-xl leading-none mt-0.5">👥</span>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-800">{listing.roommatesCount} {t('roommatesTotal')}</p>
+                    </div>
+                  </div>
+                )}
+
+                {listing.roommatesGender && (
+                  <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
+                    <span className="text-xl leading-none mt-0.5">🚻</span>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-800">{genderLabel}</p>
+                    </div>
+                  </div>
+                )}
+
+                {listing.sharedBathroom && (
+                  <div className="flex items-start gap-3 p-3 bg-zinc-50 rounded-xl">
+                    <span className="text-xl leading-none mt-0.5">🚿</span>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-800">
+                        {listing.sharedBathroom === 'shared' ? t('sharedBathroomShared') : t('sharedBathroomPrivate')}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {listing.roomType === 'living' && (
+                  <>
+                    <div className={`flex items-start gap-3 p-3 rounded-xl ${listing.hasPartition ? 'bg-green-50' : 'bg-zinc-50'}`}>
+                      <span className={`text-base font-bold leading-none mt-0.5 ${listing.hasPartition ? 'text-green-600' : 'text-zinc-400'}`}>
+                        {listing.hasPartition ? '✓' : '✗'}
+                      </span>
+                      <div>
+                        <p className={`text-sm font-medium ${listing.hasPartition ? 'text-green-700' : 'text-zinc-500'}`}>
+                          {listing.hasPartition ? t('hasPartition') : t('noPartition')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`flex items-start gap-3 p-3 rounded-xl ${listing.hasWindow ? 'bg-green-50' : 'bg-zinc-50'}`}>
+                      <span className={`text-base font-bold leading-none mt-0.5 ${listing.hasWindow ? 'text-green-600' : 'text-zinc-400'}`}>
+                        {listing.hasWindow ? '✓' : '✗'}
+                      </span>
+                      <div>
+                        <p className={`text-sm font-medium ${listing.hasWindow ? 'text-green-700' : 'text-zinc-500'}`}>
+                          {listing.hasWindow ? t('hasWindow') : t('noWindow')}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+              </div>
             </section>
           )}
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import DisclaimerButton from '@/components/DisclaimerButton';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -24,6 +25,9 @@ export default async function LocaleLayout({
     getTranslations('Nav'),
     getTranslations('Footer'),
   ]);
+  const tFooterWarning = tFooter('warning');
+  const tFooterDisclaimer = tFooter('disclaimer');
+  const tFooterCopyright = tFooter('copyright');
 
   return (
     <NextIntlClientProvider messages={messages}>
@@ -48,9 +52,22 @@ export default async function LocaleLayout({
       </header>
 
       <main className="flex-1">{children}</main>
+      <DisclaimerButton />
 
-      <footer className="border-t border-zinc-100 py-8 text-center text-sm text-zinc-400">
-        {tFooter('text')}
+      <footer>
+        {/* Risk warning */}
+        <div className="bg-amber-50 border-t border-amber-100 px-4 py-4 text-center">
+          <p className="text-xs text-amber-800 leading-relaxed max-w-3xl mx-auto">
+            {tFooterWarning}
+          </p>
+        </div>
+        {/* Disclaimer + copyright */}
+        <div className="bg-gray-50 border-t border-gray-100 px-4 py-5 text-center">
+          <p className="text-xs text-gray-500 leading-relaxed max-w-3xl mx-auto">
+            {tFooterDisclaimer}
+          </p>
+          <p className="text-xs text-gray-400 mt-3">{tFooterCopyright}</p>
+        </div>
       </footer>
     </NextIntlClientProvider>
   );

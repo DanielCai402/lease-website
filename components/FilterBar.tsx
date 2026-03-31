@@ -10,7 +10,8 @@ export interface FilterValues {
   priceMode: 'monthly' | 'daily';
   priceMin: string;
   priceMax: string;
-  moveInBy: string;         // YYYY-MM-DD or ''
+  checkIn: string;          // YYYY-MM-DD or ''
+  checkOut: string;         // YYYY-MM-DD or ''
 }
 
 export const DEFAULT_FILTERS: FilterValues = {
@@ -19,8 +20,16 @@ export const DEFAULT_FILTERS: FilterValues = {
   priceMode: 'monthly',
   priceMin: '',
   priceMax: '',
-  moveInBy: '',
+  checkIn: '',
+  checkOut: '',
 };
+
+function nextDay(iso: string): string {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d + 1);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+}
 
 export default function FilterBar({ onChange }: { onChange: (f: FilterValues) => void }) {
   const t = useTranslations('Home.filters');
@@ -38,7 +47,7 @@ export default function FilterBar({ onChange }: { onChange: (f: FilterValues) =>
   }
 
   const hasActiveFilters =
-    f.rentalType || f.borough || f.priceMin || f.priceMax || f.moveInBy;
+    f.rentalType || f.borough || f.priceMin || f.priceMax || f.checkIn || f.checkOut;
 
   const pillBase = 'px-3 py-1.5 rounded-full text-sm font-medium transition-colors';
   const pillOn   = 'bg-blue-600 text-white';
@@ -127,20 +136,36 @@ export default function FilterBar({ onChange }: { onChange: (f: FilterValues) =>
         </div>
       </div>
 
-      {/* Move-in by */}
+      {/* Check-in / Check-out */}
       <div>
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2.5">
-          {t('moveIn')}
+          {t('dates')}
         </p>
-        <input
-          type="date"
-          value={f.moveInBy}
-          onChange={(e) => update({ moveInBy: e.target.value })}
-          className={inputCls}
-        />
-        {f.moveInBy && (
-          <p className="text-xs text-zinc-400 mt-1.5">{t('moveInHint')}</p>
-        )}
+        <div className="space-y-2">
+          <div>
+            <p className="text-xs text-zinc-400 mb-1">{t('checkIn')}</p>
+            <input
+              type="date"
+              value={f.checkIn ?? ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                const keepCheckOut = f.checkOut && f.checkOut > val ? f.checkOut : '';
+                update({ checkIn: val, checkOut: keepCheckOut });
+              }}
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <p className="text-xs text-zinc-400 mb-1">{t('checkOut')}</p>
+            <input
+              type="date"
+              value={f.checkOut ?? ''}
+              min={nextDay(f.checkIn ?? '')}
+              onChange={(e) => update({ checkOut: e.target.value })}
+              className={inputCls}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Reset */}

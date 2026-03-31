@@ -4,10 +4,11 @@
     "postListing": "发布房源"
   },
   "Home": {
-    "title": "在纽约找到你的下一个家",
-    "subtitle": "共 {count} 条房源 — 无中介费，直接联系房东",
+    "title": "纽约短租信息平台",
+    "subtitle": "短期出租 · 直接联系房东",
     "found": "找到 {count} 条结果",
     "foundPlural": "找到 {count} 条结果",
+    "warning": "⚠️ 本平台仅提供信息展示，所有交易由房东与租客私下协商，请自行谨慎核实，平台不承担任何责任。",
     "noResults": "没有符合条件的房源",
     "noResultsHint": "试试调整上方的筛选条件",
     "filters": {
@@ -22,8 +23,9 @@
       "daily": "日租",
       "min": "最低",
       "max": "最高",
-      "moveIn": "入住日期",
-      "moveInHint": "显示该日期前可入住的房源",
+      "dates": "入住时间",
+      "checkIn": "入住日期",
+      "checkOut": "退房日期",
       "reset": "重置筛选"
     }
   },
@@ -71,7 +73,8 @@
     "petsNegotiable": "宠物可商量",
     "roommatesTitle": "合租信息",
     "roommatesTotal": "人",
-    "sharedBaths": "个共用卫生间",
+    "sharedBathroomShared": "需要合用卫生间",
+    "sharedBathroomPrivate": "独立卫生间",
     "genderFemale": "全女",
     "genderMale": "全男",
     "genderMixed": "男女混住",
@@ -79,13 +82,17 @@
     "noPartition": "无隔断",
     "hasWindow": "有窗",
     "noWindow": "无窗",
-    "utilitiesIncluded": "含水电网",
+    "utilitiesIncluded": "含水电",
+    "utilitiesExtra": "水电费另付",
+    "utilitiesExtraWithCost": "水电另付，约 ${amount}{unit}",
     "depositNone": "无押金",
     "depositOnePlusOne": "押一付一",
     "depositCustomMonthly": "押金 ${amount}",
     "depositFixed": "固定押金 ${amount}",
     "depositPercent": "总租金 {percent}%",
     "wechatLabel": "房东微信",
+    "revealWechat": "点击查看微信号",
+    "hide": "隐藏",
     "copy": "复制",
     "copied": "已复制",
     "contactFormNote": "留下您的微信号，房东会主动联系您",
@@ -212,8 +219,9 @@
       "genderFemale": "全女",
       "genderMale": "全男",
       "genderMixed": "混住",
-      "sharedBathrooms": "共用卫生间数量",
-      "sharedBathroomsPlaceholder": "1",
+      "sharedBathroom": "卫生间",
+      "sharedBathroomShared": "需要合用卫生间",
+      "sharedBathroomPrivate": "独立卫生间",
       "hasPartition": "是否有隔断",
       "hasWindow": "是否有窗",
       "yesOption": "是",
@@ -250,6 +258,28 @@
     }
   },
   "Footer": {
-    "text": "© 2026 NYCRentals — 所有房源由房东自行发布，请直接与房东联系。"
+    "text": "© 2026 NYCRentals — 所有房源由房东自行发布，请直接与房东联系。",
+    "warning": "⚠️ 风险提示：付款前请视频核实房东身份，警惕过高押金及不明支付方式，建议保留所有转账记录。如发现虚假房源请举报。",
+    "disclaimer": "本平台仅提供信息展示服务，不参与任何交易，不对房源真实性作出保证。用户需自行确保其行为符合租约约定及当地法律法规。平台对因使用本平台产生的任何损失概不负责。",
+    "copyright": "© 2025 NYCRentals · All rights reserved"
+  },
+  "Report": {
+    "title": "举报房源",
+    "buttonLabel": "举报房源",
+    "reason1": "虚假房源",
+    "reason2": "信息不实",
+    "reason3": "疑似诈骗",
+    "reason4": "重复发布",
+    "reason5": "其他",
+    "submit": "提交举报",
+    "cancel": "取消",
+    "success": "已收到举报，感谢您的反馈",
+    "close": "关闭"
+  },
+  "Disclaimer": {
+    "title": "使用须知",
+    "body": "本平台是一个信息共享平台，致力于连接有短期出租需求的房东与租客。所有具体的租赁条款、价格协商、付款安排等事宜均由房东与租客私下自行协商完成，平台不参与任何交易过程。\n\n请注意：\n· 付款前请通过视频通话核实房东身份和房源真实情况\n· 警惕索要过高押金或要求使用不明支付方式的行为\n· 建议保留所有转账记录和聊天记录\n· 如发现虚假房源，请使用举报功能\n· 诚信交易，房东和租客请互相尊重\n\n用户需自行确保其发布的房源信息符合相关租约约定及当地法律法规，平台对此不承担任何责任。本平台不对房源信息的真实性作出保证，对因使用本平台产生的任何损失概不负责。使用本平台即表示您已阅读并同意以上条款。",
+    "confirm": "我已了解，进入平台",
+    "buttonLabel": "使用须知"
   }
 }

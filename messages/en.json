@@ -4,10 +4,11 @@
     "postListing": "Post a Listing"
   },
   "Home": {
-    "title": "Find your next place in NYC",
-    "subtitle": "{count} listings — no broker fees, contact landlords directly",
+    "title": "NYC Short-Term Sublets",
+    "subtitle": "Student & professional sublets · No brokers · Contact landlords directly",
     "found": "{count} listing found",
     "foundPlural": "{count} listings found",
+    "warning": "⚠️ This platform is for informational purposes only. All transactions are arranged privately between landlords and renters. Please verify carefully. We are not responsible for any losses.",
     "noResults": "No listings match your filters",
     "noResultsHint": "Try adjusting the filters above",
     "filters": {
@@ -22,8 +23,9 @@
       "daily": "Daily",
       "min": "Min",
       "max": "Max",
-      "moveIn": "Move-in by",
-      "moveInHint": "Shows listings available by this date",
+      "dates": "Dates",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
       "reset": "Clear filters"
     }
   },
@@ -71,7 +73,8 @@
     "petsNegotiable": "Pets negotiable",
     "roommatesTitle": "Roommate info",
     "roommatesTotal": "people total",
-    "sharedBaths": "shared bath",
+    "sharedBathroomShared": "Shared bathroom",
+    "sharedBathroomPrivate": "Private bathroom",
     "genderFemale": "Female only",
     "genderMale": "Male only",
     "genderMixed": "Mixed",
@@ -80,12 +83,16 @@
     "hasWindow": "Has window",
     "noWindow": "No window",
     "utilitiesIncluded": "Utilities included",
+    "utilitiesExtra": "Utilities not included",
+    "utilitiesExtraWithCost": "Utilities extra, ~${amount}{unit}",
     "depositNone": "No deposit",
     "depositOnePlusOne": "1-month deposit + 1-month prepaid",
     "depositCustomMonthly": "${amount} security deposit",
     "depositFixed": "${amount} fixed deposit",
     "depositPercent": "{percent}% of total rent",
     "wechatLabel": "Landlord's WeChat",
+    "revealWechat": "Click to reveal WeChat ID",
+    "hide": "Hide",
     "copy": "Copy",
     "copied": "Copied!",
     "contactFormNote": "Leave your WeChat ID and the landlord will reach out",
@@ -212,8 +219,9 @@
       "genderFemale": "Female only",
       "genderMale": "Male only",
       "genderMixed": "Mixed",
-      "sharedBathrooms": "Shared bathrooms",
-      "sharedBathroomsPlaceholder": "1",
+      "sharedBathroom": "Bathroom",
+      "sharedBathroomShared": "Shared bathroom",
+      "sharedBathroomPrivate": "Private bathroom",
       "hasPartition": "Has partition",
       "hasWindow": "Has window",
       "yesOption": "Yes",
@@ -240,7 +248,7 @@
       "invalidEmail": "Enter a valid email",
       "rentalTypeRequired": "Please select a rental type",
       "roomTypeRequired": "Please select a room type",
-      "dateRange": "Move-out date must be after move-in date"
+      "dateRange": "End date must be after start date"
     },
     "success": {
       "title": "Your listing has been submitted!",
@@ -250,6 +258,28 @@
     }
   },
   "Footer": {
-    "text": "© 2026 NYCRentals — Listings are posted by individual landlords. Contact them directly."
+    "text": "© 2026 NYCRentals — Listings are posted by individual landlords. Contact them directly.",
+    "warning": "⚠️ Safety Notice: Verify landlord identity via video call before payment. Be cautious of high deposits or unfamiliar payment methods. Keep records of all transactions. Report suspicious listings.",
+    "disclaimer": "This platform provides information sharing services only. We do not participate in any transactions or guarantee the accuracy of listings. Users are responsible for ensuring compliance with their lease agreements and local laws. We are not liable for any losses arising from use of this platform.",
+    "copyright": "© 2025 NYCRentals · All rights reserved"
+  },
+  "Report": {
+    "title": "Report Listing",
+    "buttonLabel": "Report Listing",
+    "reason1": "Fake listing",
+    "reason2": "Inaccurate information",
+    "reason3": "Suspected scam",
+    "reason4": "Duplicate listing",
+    "reason5": "Other",
+    "submit": "Submit Report",
+    "cancel": "Cancel",
+    "success": "Report received, thank you",
+    "close": "Close"
+  },
+  "Disclaimer": {
+    "title": "Before You Continue",
+    "body": "NYCRentals is an information-sharing platform dedicated to connecting landlords and renters for short-term rentals in NYC. All specific arrangements — including rental terms, pricing, and payments — are handled privately between landlords and renters. This platform is solely responsible for sharing information and making connections.\n\nPlease be aware:\n· Verify the landlord's identity and property via video call before making any payment\n· Be cautious of unusually high deposits or requests to use unfamiliar payment methods\n· Keep records of all payments and conversations\n· Use the report button if you encounter suspicious listings\n· We encourage honest and respectful conduct from both landlords and renters\n\nUsers are solely responsible for ensuring their listings comply with their lease agreements and applicable local laws. NYCRentals does not guarantee the accuracy of any listings and is not responsible for any losses arising from use of this platform. By continuing, you agree to these terms.",
+    "confirm": "I Understand, Continue",
+    "buttonLabel": "Disclaimer"
   }
 }

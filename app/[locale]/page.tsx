@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { listings } from '@/lib/data';
 import ListingCard from '@/components/ListingCard';
 import FilterBar, { FilterValues, DEFAULT_FILTERS } from '@/components/FilterBar';
+import DisclaimerModal from '@/components/DisclaimerModal';
 
 export default function HomePage() {
   const t = useTranslations('Home');
@@ -21,7 +22,10 @@ export default function HomePage() {
       if (filters.priceMax && price > Number(filters.priceMax)) return false;
     }
 
-    if (filters.moveInBy && l.availableFrom > filters.moveInBy) return false;
+    if (filters.checkIn && filters.checkOut) {
+      if (l.availableFrom > filters.checkIn) return false;
+      if (l.availableTo < filters.checkOut) return false;
+    }
 
     return true;
   });
@@ -30,6 +34,7 @@ export default function HomePage() {
 
   return (
     <>
+      <DisclaimerModal />
       {/* Hero */}
       <div className="bg-[#f5f5f5] border-b border-zinc-200">
         <div className="max-w-6xl mx-auto px-4 py-12">
@@ -37,7 +42,7 @@ export default function HomePage() {
             {t('title')}
           </h1>
           <p className="text-zinc-500 text-lg">
-            {t('subtitle', { count: listings.length })}
+            {t('subtitle')}
           </p>
         </div>
       </div>
@@ -50,6 +55,11 @@ export default function HomePage() {
           </aside>
 
           <section>
+            {/* Warning banner */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-5">
+              <p className="text-xs text-amber-800 leading-relaxed">{t('warning')}</p>
+            </div>
+
             {filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <p className="text-5xl mb-4">🗽</p>

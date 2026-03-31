@@ -32,6 +32,7 @@ export default function ContactCard(props: Props) {
 
   const t = useTranslations('Listing');
   const [copied, setCopied] = useState(false);
+  const [wechatRevealed, setWechatRevealed] = useState(false);
   const [wechatId, setWechatId] = useState('');
   const [message, setMessage] = useState('');
   const [formSent, setFormSent] = useState(false);
@@ -72,10 +73,10 @@ export default function ContactCard(props: Props) {
   }
 
   const utilitiesLine = utilitiesIncluded
-    ? t('utilitiesIncluded')
+    ? `✓ ${t('utilitiesIncluded')}`
     : utilitiesCost
-      ? `+ ~$${utilitiesCost}${utilitiesUnit === 'monthly' ? t('perMonth') : t('perDay')}`
-      : null;
+      ? t('utilitiesExtraWithCost', { amount: utilitiesCost, unit: utilitiesUnit === 'monthly' ? t('perMonth') : t('perDay') })
+      : t('utilitiesExtra');
 
   const cardContent = (
     <div className="space-y-5">
@@ -118,18 +119,37 @@ export default function ContactCard(props: Props) {
       {/* WeChat display */}
       {wechat && (
         <>
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs text-zinc-500 mb-0.5">{t('wechatLabel')}</p>
-              <p className="font-medium text-zinc-800 truncate">{wechat}</p>
-            </div>
-            <button
-              type="button"
-              onClick={copyWechat}
-              className="flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg border border-zinc-300 hover:border-zinc-400 text-zinc-700 transition-colors"
-            >
-              {copied ? t('copied') : t('copy')}
-            </button>
+          <div>
+            <p className="text-xs text-zinc-500 mb-1.5">{t('wechatLabel')}</p>
+            {wechatRevealed ? (
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-medium text-zinc-800 truncate min-w-0">{wechat}</p>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={copyWechat}
+                    className="text-sm font-medium px-3 py-1.5 rounded-lg border border-zinc-300 hover:border-zinc-400 text-zinc-700 transition-colors"
+                  >
+                    {copied ? t('copied') : t('copy')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWechatRevealed(false)}
+                    className="text-sm font-medium px-3 py-1.5 rounded-lg border border-zinc-300 hover:border-zinc-400 text-zinc-500 transition-colors"
+                  >
+                    {t('hide')}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setWechatRevealed(true)}
+                className="w-full text-sm font-medium px-3 py-2 rounded-lg border border-zinc-300 hover:border-blue-400 hover:text-blue-600 text-zinc-600 transition-colors"
+              >
+                {t('revealWechat')}
+              </button>
+            )}
           </div>
           <hr className="border-zinc-200" />
         </>

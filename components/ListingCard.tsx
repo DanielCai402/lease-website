@@ -1,13 +1,17 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Listing } from '@/lib/types';
 import { shortDate } from '@/lib/utils';
+import ReportModal from './ReportModal';
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const t = useTranslations('Card');
+  const tReport = useTranslations('Report');
+  const [reportOpen, setReportOpen] = useState(false);
 
   let typeBadge: string;
   if (listing.rentalType === 'entire') {
@@ -27,6 +31,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
   if (listing.parking !== 'none') tags.push(t('tagParking'));
 
   return (
+    <>
     <Link
       href={`/listings/${listing.id}`}
       className="group block bg-white rounded-xl overflow-hidden border border-zinc-200 hover:border-zinc-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
@@ -88,17 +93,28 @@ export default function ListingCard({ listing }: { listing: Listing }) {
           )}
         </div>
 
-        {/* Quick tags */}
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 pt-0.5">
+        {/* Quick tags + report button */}
+        <div className="flex items-end justify-between gap-2 pt-0.5">
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
               <span key={tag} className="text-xs bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded-md">
                 {tag}
               </span>
             ))}
           </div>
-        )}
+          <button
+            type="button"
+            title={tReport('buttonLabel')}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReportOpen(true); }}
+            className="flex-shrink-0 text-gray-400 hover:text-red-400 transition-colors leading-none"
+          >
+            🚩
+          </button>
+        </div>
       </div>
     </Link>
+
+    <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} />
+    </>
   );
 }

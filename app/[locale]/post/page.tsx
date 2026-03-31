@@ -40,7 +40,7 @@ interface PostForm {
   pets: string;
   roommatesCount: string;
   roommatesGender: string;
-  sharedBathrooms: string;
+  sharedBathroom: string;
   hasPartition: string;
   hasWindow: string;
   description: string;
@@ -81,7 +81,7 @@ const EMPTY: PostForm = {
   pets: '',
   roommatesCount: '',
   roommatesGender: '',
-  sharedBathrooms: '',
+  sharedBathroom: '',
   hasPartition: '',
   hasWindow: '',
   description: '',
@@ -92,6 +92,13 @@ const EMPTY: PostForm = {
 };
 
 const LAYOUTS = ['Studio', '1B1B', '2B1B', '2B2B', '3B1B', '3B2B', '3B3B'];
+
+function nextDay(iso: string): string {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d + 1);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+}
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -188,7 +195,7 @@ export default function PostPage() {
     }
     if (!form.availableFrom) e.availableFrom = req;
     if (!form.availableTo) e.availableTo = req;
-    if (form.availableFrom && form.availableTo && form.availableTo < form.availableFrom) {
+    if (form.availableFrom && form.availableTo && form.availableTo <= form.availableFrom) {
       e.availableTo = t('validation.dateRange');
     }
     if (!form.dailyPrice && !form.monthlyPrice) {
@@ -202,7 +209,7 @@ export default function PostPage() {
     if (form.rentalType === 'room') {
       if (!form.roommatesCount) e.roommatesCount = req;
       if (!form.roommatesGender) e.roommatesGender = req;
-      if (!form.sharedBathrooms) e.sharedBathrooms = req;
+      if (!form.sharedBathroom) e.sharedBathroom = req;
       if (form.roomType === 'living') {
         if (!form.hasPartition) e.hasPartition = req;
         if (!form.hasWindow) e.hasWindow = req;
@@ -409,7 +416,14 @@ export default function PostPage() {
               <input
                 type="date"
                 value={form.availableTo}
-                onChange={(e) => setField('availableTo', e.target.value)}
+                min={nextDay(form.availableFrom)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setField('availableTo', val);
+                  if (form.availableFrom && val && val <= form.availableFrom) {
+                    setErrors((err) => ({ ...err, availableTo: t('validation.dateRange') }));
+                  }
+                }}
                 data-error={!!errors.availableTo}
                 className={inputCls(!!errors.availableTo)}
               />
@@ -739,15 +753,14 @@ export default function PostPage() {
                     className={inputCls(!!errors.roommatesCount)}
                   />
                 </Field>
-                <Field label={t('fields.sharedBathrooms')} required error={errors.sharedBathrooms}>
-                  <input
-                    type="number"
-                    min={1}
-                    placeholder={t('fields.sharedBathroomsPlaceholder')}
-                    value={form.sharedBathrooms}
-                    onChange={(e) => setField('sharedBathrooms', e.target.value)}
-                    data-error={!!errors.sharedBathrooms}
-                    className={inputCls(!!errors.sharedBathrooms)}
+                <Field label={t('fields.sharedBathroom')} required error={errors.sharedBathroom}>
+                  <RadioGroup
+                    options={[
+                      { value: 'shared', label: t('fields.sharedBathroomShared') },
+                      { value: 'private', label: t('fields.sharedBathroomPrivate') },
+                    ]}
+                    value={form.sharedBathroom}
+                    onChange={(v) => setField('sharedBathroom', v)}
                   />
                 </Field>
               </div>

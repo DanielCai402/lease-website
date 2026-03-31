@@ -67,7 +67,7 @@ export const listings: Listing[] = [
     pets: 'no',
     roommatesCount: 3,
     roommatesGender: 'mixed',
-    sharedBathrooms: 1,
+    sharedBathroom: 'shared',
     images: [
       'https://picsum.photos/seed/l2a/800/500',
       'https://picsum.photos/seed/l2b/800/500',
@@ -137,7 +137,7 @@ export const listings: Listing[] = [
     pets: 'yes',
     roommatesCount: 3,
     roommatesGender: 'female',
-    sharedBathrooms: 2,
+    sharedBathroom: 'shared',
     images: [
       'https://picsum.photos/seed/l4a/800/500',
       'https://picsum.photos/seed/l4b/800/500',
@@ -208,7 +208,7 @@ export const listings: Listing[] = [
     pets: 'no',
     roommatesCount: 2,
     roommatesGender: 'mixed',
-    sharedBathrooms: 1,
+    sharedBathroom: 'shared',
     hasPartition: true,
     hasWindow: true,
     images: [
