@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NYCRentals
+
+A bilingual (Chinese/English) rental listings platform for the Chinese community in New York and New Jersey. Landlords and tenants can browse and post short-term rental and sublet listings.
+
+## Features
+
+- Browse rental listings with filtering by type, borough, price range, and move-in date
+- Detailed listing pages with image galleries, maps, and contact info
+- Post new listings with a comprehensive 8-section form
+- Two rental types: entire unit and room/sublet
+- Dual pricing: monthly and daily rates
+- Coverage: NYC's five boroughs + Jersey City, Hoboken, and Hudson County
+- WeChat-first contact model
+- Full Chinese/English internationalization
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **i18n:** next-intl
+- **Maps:** Leaflet + OpenStreetMap / Nominatim
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The app defaults to the `/zh/` (Chinese) locale.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/                  # Next.js App Router pages
+components/           # React components
+lib/                  # Utilities, types, and mock data
+i18n/                 # i18n routing and request config
+messages/             # en.json and zh.json translation files
+proxy.ts              # Middleware for locale routing
+```
 
-## Learn More
+## Locales
 
-To learn more about Next.js, take a look at the following resources:
+| URL prefix | Language |
+|------------|----------|
+| `/zh/`     | Chinese (default) |
+| `/en/`     | English |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Status
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Currently in development with static mock data. No database is connected yet. Planned next steps include Supabase integration, user authentication, and Vercel deployment.
