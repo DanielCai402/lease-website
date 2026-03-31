@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, type FormEvent } from 'react';
+import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { lookupZip } from '@/lib/zip-to-neighborhood';
@@ -43,6 +43,7 @@ interface PostForm {
   sharedBathrooms: string;
   hasPartition: string;
   hasWindow: string;
+  description: string;
   videoLinks: string[];
   wechat: string;
   phone: string;
@@ -83,6 +84,7 @@ const EMPTY: PostForm = {
   sharedBathrooms: '',
   hasPartition: '',
   hasWindow: '',
+  description: '',
   videoLinks: [],
   wechat: '',
   phone: '',
@@ -100,10 +102,17 @@ export default function PostPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [playingVideoIndex, setPlayingVideoIndex] = useState<number | null>(null);
   const [zipStatus, setZipStatus] = useState<'idle' | 'found' | 'notfound'>('idle');
   const [zipInfo, setZipInfo] = useState<ZipInfo | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const previewsRef = useRef<string[]>([]);
+  previewsRef.current = previews;
+
+  // Revoke all object URLs on unmount to avoid memory leaks
+  useEffect(() => () => { previewsRef.current.forEach(URL.revokeObjectURL); }, []);
 
   // ── helpers ──────────────────────────────────────────────────────────────
 
@@ -132,15 +141,20 @@ export default function PostPage() {
 
   function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(e.target.files ?? []);
-    const combined = [...files, ...selected].slice(0, 10);
-    setFiles(combined);
-    setPreviews(combined.map((f) => URL.createObjectURL(f)));
+    const slots = 10 - files.length;
+    const toAdd = selected.slice(0, slots);
+    const newUrls = toAdd.map((f) => URL.createObjectURL(f));
+    setFiles((prev) => [...prev, ...toAdd]);
+    setPreviews((prev) => [...prev, ...newUrls]);
+    e.target.value = '';
   }
 
   function removeFile(i: number) {
-    const next = files.filter((_, idx) => idx !== i);
-    setFiles(next);
-    setPreviews(next.map((f) => URL.createObjectURL(f)));
+    URL.revokeObjectURL(previews[i]);
+    setFiles((prev) => prev.filter((_, idx) => idx !== i));
+    setPreviews((prev) => prev.filter((_, idx) => idx !== i));
+    setLightboxIndex((prev) => (prev === i ? null : prev !== null && prev > i ? prev - 1 : prev));
+    setPlayingVideoIndex((prev) => (prev === i ? null : prev !== null && prev > i ? prev - 1 : prev));
   }
 
   function addVideo() {
@@ -194,7 +208,6 @@ export default function PostPage() {
         if (!form.hasWindow) e.hasWindow = req;
       }
     }
-    if (!form.wechat.trim()) e.wechat = req;
     if (form.email && !form.email.includes('@')) e.email = t('validation.invalidEmail');
 
     return e;
@@ -264,6 +277,16 @@ export default function PostPage() {
               onChange={(e) => setField('title', e.target.value)}
               data-error={!!errors.title}
               className={inputCls(!!errors.title)}
+            />
+          </Field>
+
+          <Field label={t('fields.description')}>
+            <textarea
+              placeholder={t('fields.descriptionPlaceholder')}
+              value={form.description}
+              onChange={(e) => setField('description', e.target.value)}
+              rows={4}
+              className={inputCls(false) + ' resize-none'}
             />
           </Field>
 
@@ -772,87 +795,124 @@ export default function PostPage() {
 
         {/* ── Section 7: Media ──────────────────────────────────────────── */}
         <SectionCard number={7} title={t('sections.photosVideo')}>
-          {/* Photo upload */}
-          <div className="space-y-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            className="hidden"
+            onChange={handleFiles}
+          />
+
+          {files.length === 0 ? (
+            /* Empty state: full dashed upload area */
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-zinc-300 rounded-xl py-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-colors"
+              className="w-full border-2 border-dashed border-zinc-300 rounded-xl py-10 text-center hover:border-blue-400 hover:bg-blue-50 transition-colors"
             >
               <p className="text-zinc-500 text-sm font-medium">{t('upload.button')}</p>
               <p className="text-zinc-400 text-xs mt-1">{t('upload.hint')}</p>
             </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={handleFiles}
-            />
-            {previews.length > 0 && (
-              <div className="grid grid-cols-5 gap-2">
-                {previews.map((src, i) => (
-                  <div key={i} className="relative group rounded-lg overflow-hidden aspect-square bg-zinc-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+          ) : (
+            /* Grid with thumbnails + optional add button */
+            <div className="grid grid-cols-3 gap-2">
+              {previews.map((src, i) => {
+                const isVideo = files[i]?.type.startsWith('video/');
+                const isPlaying = playingVideoIndex === i;
+                return (
+                  <div key={src} className="relative rounded-xl overflow-hidden aspect-square bg-zinc-100">
+                    {isVideo ? (
+                      isPlaying ? (
+                        <video
+                          src={src}
+                          autoPlay
+                          playsInline
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <button
+                          type="button"
+                          className="w-full h-full relative block"
+                          onClick={() => setPlayingVideoIndex(i)}
+                          aria-label="Play video"
+                        >
+                          <video
+                            src={src}
+                            preload="metadata"
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Play button overlay */}
+                          <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                            <span className="w-10 h-10 rounded-full bg-white/85 flex items-center justify-center shadow">
+                              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-zinc-700 translate-x-0.5">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </span>
+                          </span>
+                          {/* Camera badge */}
+                          <span className="absolute bottom-1.5 left-1.5 bg-black/50 rounded px-1 py-0.5">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-3 h-3">
+                              <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z" />
+                            </svg>
+                          </span>
+                        </button>
+                      )
+                    ) : (
+                      /* Image thumbnail — click to lightbox */
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <button
+                        type="button"
+                        className="w-full h-full block"
+                        onClick={() => setLightboxIndex(i)}
+                        aria-label="View image"
+                      >
+                        <img src={src} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    )}
+
+                    {/* Delete button */}
                     <button
                       type="button"
                       onClick={() => removeFile(i)}
-                      className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xl"
+                      className="absolute top-1.5 right-1.5 z-10 w-5 h-5 rounded-full bg-black/60 text-white text-xs font-bold flex items-center justify-center hover:bg-black/80 leading-none"
+                      aria-label="Remove"
                     >
                       ×
                     </button>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                );
+              })}
 
-          {/* Video links */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-zinc-700">{t('upload.videoLinks')}</p>
-            {form.videoLinks.map((link, i) => (
-              <div key={i} className="flex gap-2">
-                <input
-                  type="url"
-                  placeholder={t('upload.videoLinkPlaceholder')}
-                  value={link}
-                  onChange={(e) => updateVideo(i, e.target.value)}
-                  className={inputCls(false)}
-                />
+              {/* Add button (shown when < 10 files) */}
+              {files.length < 10 && (
                 <button
                   type="button"
-                  onClick={() => removeVideo(i)}
-                  className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-xl border border-zinc-300 text-zinc-400 hover:border-red-300 hover:text-red-500 transition-colors"
-                  aria-label="Remove"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="aspect-square rounded-xl border-2 border-dashed border-zinc-300 flex flex-col items-center justify-center hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                  aria-label="Add media"
                 >
-                  ×
+                  <span className="text-2xl text-zinc-400 leading-none">+</span>
                 </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={addVideo}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
-            >
-              {t('upload.addLink')}
-            </button>
-          </div>
+              )}
+            </div>
+          )}
         </SectionCard>
 
         {/* ── Section 8: Contact ────────────────────────────────────────── */}
         <SectionCard number={8} title={t('sections.contact')}>
-          <p className="text-xs text-zinc-400 -mt-2">{t('contactNote')}</p>
+          <p className="text-xs text-zinc-500 -mt-2 leading-relaxed">{t('wechatNote')}</p>
 
-          <Field label={t('fields.wechat')} required error={errors.wechat}>
+          <Field label={t('fields.wechat')}>
             <input
               type="text"
               placeholder={t('fields.wechatPlaceholder')}
               value={form.wechat}
               onChange={(e) => setField('wechat', e.target.value)}
-              data-error={!!errors.wechat}
-              className={inputCls(!!errors.wechat)}
+              className={inputCls(false)}
             />
           </Field>
 
@@ -886,11 +946,46 @@ export default function PostPage() {
           {t('submit')}
         </button>
       </form>
+
+      {/* ── Lightbox ──────────────────────────────────────────────────────── */}
+      {lightboxIndex !== null && previews[lightboxIndex] && (
+        <Lightbox
+          src={previews[lightboxIndex]}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }
 
 // ─── Helper components ────────────────────────────────────────────────────────
+
+function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+      onClick={onClose}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+        draggable={false}
+      />
+    </div>
+  );
+}
 
 function Collapsible({ show, children }: { show: boolean; children: React.ReactNode }) {
   return (

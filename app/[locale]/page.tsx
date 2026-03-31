@@ -4,26 +4,25 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { listings } from '@/lib/data';
 import ListingCard from '@/components/ListingCard';
-import FilterBar, { FilterValues } from '@/components/FilterBar';
-
-const DEFAULT_FILTERS: FilterValues = {
-  borough: '',
-  priceMin: 0,
-  priceMax: Infinity,
-  bedrooms: '',
-};
+import FilterBar, { FilterValues, DEFAULT_FILTERS } from '@/components/FilterBar';
 
 export default function HomePage() {
   const t = useTranslations('Home');
   const [filters, setFilters] = useState<FilterValues>(DEFAULT_FILTERS);
 
   const filtered = listings.filter((l) => {
+    if (filters.rentalType && l.rentalType !== filters.rentalType) return false;
     if (filters.borough && l.borough !== filters.borough) return false;
-    if (l.price < filters.priceMin || l.price > filters.priceMax) return false;
-    if (filters.bedrooms !== '') {
-      const min = parseInt(filters.bedrooms);
-      if (min === 3 ? l.bedrooms < 3 : l.bedrooms !== min) return false;
+
+    if (filters.priceMin || filters.priceMax) {
+      const price = filters.priceMode === 'monthly' ? l.monthlyPrice : l.dailyPrice;
+      if (!price) return false;
+      if (filters.priceMin && price < Number(filters.priceMin)) return false;
+      if (filters.priceMax && price > Number(filters.priceMax)) return false;
     }
+
+    if (filters.moveInBy && l.availableFrom > filters.moveInBy) return false;
+
     return true;
   });
 
@@ -43,9 +42,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main */}
       <div className="max-w-6xl mx-auto px-4 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
           <aside className="lg:sticky lg:top-20 lg:self-start">
             <FilterBar onChange={setFilters} />
           </aside>
