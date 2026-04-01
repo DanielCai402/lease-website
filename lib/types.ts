@@ -91,4 +91,6 @@ export interface Listing {
 
   // Meta
   postedAt: string; // ISO datetime
+  status?: 'active' | 'inactive';
+  user_id?: string;
 }

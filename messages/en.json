@@ -1,7 +1,34 @@
 {
   "Nav": {
     "browse": "Browse",
-    "postListing": "Post a Listing"
+    "postListing": "Post a Listing",
+    "signIn": "Login",
+    "signOut": "Sign Out",
+    "myListings": "My Listings"
+  },
+  "Auth": {
+    "loginTab": "Login",
+    "registerTab": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loginSubmit": "Login",
+    "registerSubmit": "Create Account",
+    "errorInvalidEmail": "Please enter a valid email address",
+    "errorPasswordLength": "Password must be at least 8 characters",
+    "errorPasswordMismatch": "Passwords do not match"
+  },
+  "MyListings": {
+    "title": "My Listings",
+    "empty": "You haven't posted any listings yet",
+    "emptyHint": "Post a listing to get started",
+    "postListing": "Post a Listing",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete this listing?",
+    "deleteConfirmBody": "This action cannot be undone.",
+    "deleteConfirm": "Delete",
+    "deleteCancel": "Cancel"
   },
   "Home": {
     "title": "NYC Short-Term Sublets",
@@ -249,8 +276,12 @@
       "invalidEmail": "Enter a valid email",
       "rentalTypeRequired": "Please select a rental type",
       "roomTypeRequired": "Please select a room type",
-      "dateRange": "End date must be after start date"
+      "dateRange": "End date must be after start date",
+      "dateRangeFrom": "Start date must be before end date"
     },
+    "editTitle": "Edit listing",
+    "editSubtitle": "Update your listing details below.",
+    "saveChanges": "Save changes",
     "success": {
       "title": "Your listing has been submitted!",
       "message": "In a full version, it would appear on the site after review. For now, this is just a demo.",

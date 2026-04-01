@@ -5,6 +5,7 @@ import { routing } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import DisclaimerButton from '@/components/DisclaimerButton';
+import NavAuth from '@/components/NavAuth';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -41,6 +42,7 @@ export default async function LocaleLayout({
               {tNav('browse')}
             </Link>
             <LanguageSwitcher />
+            <NavAuth />
             <Link
               href="/post"
               className="bg-blue-600 text-white px-4 py-1.5 rounded-full hover:bg-blue-700 transition-colors"

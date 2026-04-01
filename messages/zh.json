@@ -1,7 +1,34 @@
 {
   "Nav": {
     "browse": "浏览房源",
-    "postListing": "发布房源"
+    "postListing": "发布房源",
+    "signIn": "登录",
+    "signOut": "退出",
+    "myListings": "我的房源"
+  },
+  "Auth": {
+    "loginTab": "登录",
+    "registerTab": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "loginSubmit": "登录",
+    "registerSubmit": "创建账号",
+    "errorInvalidEmail": "请输入有效的邮箱地址",
+    "errorPasswordLength": "密码至少需要8位",
+    "errorPasswordMismatch": "两次密码输入不一致"
+  },
+  "MyListings": {
+    "title": "我的房源",
+    "empty": "您还没有发布任何房源",
+    "emptyHint": "发布您的第一条房源吧",
+    "postListing": "发布房源",
+    "edit": "编辑",
+    "delete": "删除",
+    "deleteConfirmTitle": "确定要删除这条房源吗？",
+    "deleteConfirmBody": "此操作不可撤销。",
+    "deleteConfirm": "确认删除",
+    "deleteCancel": "取消"
   },
   "Home": {
     "title": "纽约短租信息平台",
@@ -249,8 +276,12 @@
       "invalidEmail": "请输入有效邮箱",
       "rentalTypeRequired": "请选择出租类型",
       "roomTypeRequired": "请选择房间类型",
-      "dateRange": "结束日期必须晚于开始日期"
+      "dateRange": "结束日期必须晚于开始日期",
+      "dateRangeFrom": "开始日期必须早于结束日期"
     },
+    "editTitle": "编辑房源",
+    "editSubtitle": "修改您的房源信息。",
+    "saveChanges": "保存修改",
     "success": {
       "title": "房源已提交！",
       "message": "在正式版本中，房源将在审核后显示。目前为演示模式。",

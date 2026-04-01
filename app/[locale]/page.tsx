@@ -18,6 +18,7 @@ export default function HomePage() {
     supabase
       .from('listings')
       .select('*')
+      .or('status.eq.active,status.is.null')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         setListings(
