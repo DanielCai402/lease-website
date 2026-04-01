@@ -4,7 +4,8 @@
     "postListing": "Post a Listing",
     "signIn": "Login",
     "signOut": "Sign Out",
-    "myListings": "My Listings"
+    "myListings": "My Listings",
+    "adminPanel": "Admin Panel"
   },
   "Auth": {
     "loginTab": "Login",
@@ -307,6 +308,27 @@
     "cancel": "Cancel",
     "success": "Report received, thank you",
     "close": "Close"
+  },
+  "Admin": {
+    "title": "Admin Panel",
+    "tabReports": "Reports",
+    "tabListings": "All Listings",
+    "reportsCount": "{count} reports",
+    "listingsCount": "{count} active listings",
+    "noReports": "No reports yet",
+    "noListings": "No listings",
+    "resolveButton": "Mark resolved",
+    "resolvedLabel": "Resolved",
+    "deleteButton": "Delete",
+    "deleteConfirmTitle": "Delete this listing?",
+    "deleteConfirmBody": "This action cannot be undone and will also delete associated images and videos.",
+    "deleteConfirm": "Delete",
+    "deleteCancel": "Cancel",
+    "listingDeleted": "Listing deleted",
+    "reportedUser": "Reported user",
+    "postedUser": "User",
+    "forbidden": "Access denied",
+    "forbiddenMessage": "You don't have admin permissions."
   },
   "Disclaimer": {
     "title": "Before You Continue",

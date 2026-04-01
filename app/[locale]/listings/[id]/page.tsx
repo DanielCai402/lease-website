@@ -74,7 +74,7 @@ export default async function ListingPage({
         >
           ← {t('back')}
         </Link>
-        <ReportButton listingId={listing.id} />
+        <ReportButton listingId={listing.id} reportedUserId={listing.user_id} listingTitle={listing.title} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">

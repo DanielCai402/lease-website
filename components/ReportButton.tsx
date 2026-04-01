@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import ReportModal from './ReportModal';
 
-export default function ReportButton({ listingId }: { listingId?: string }) {
+export default function ReportButton({ listingId, reportedUserId, listingTitle }: { listingId?: string; reportedUserId?: string; listingTitle?: string }) {
   const t = useTranslations('Report');
   const [open, setOpen] = useState(false);
 
@@ -17,7 +17,7 @@ export default function ReportButton({ listingId }: { listingId?: string }) {
       >
         {t('buttonLabel')}
       </button>
-      <ReportModal isOpen={open} onClose={() => setOpen(false)} listingId={listingId} />
+      <ReportModal isOpen={open} onClose={() => setOpen(false)} listingId={listingId} reportedUserId={reportedUserId} listingTitle={listingTitle} />
     </>
   );
 }

@@ -114,7 +114,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
       </div>
     </Link>
 
-    <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} listingId={listing.id} />
+    <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} listingId={listing.id} reportedUserId={listing.user_id} listingTitle={listing.title} />
     </>
   );
 }

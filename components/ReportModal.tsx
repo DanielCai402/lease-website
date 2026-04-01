@@ -8,11 +8,13 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   listingId?: string;
+  reportedUserId?: string;
+  listingTitle?: string;
 }
 
 const REASONS = ['fake', 'inaccurate', 'scam', 'duplicate', 'other'] as const;
 
-export default function ReportModal({ isOpen, onClose, listingId }: Props) {
+export default function ReportModal({ isOpen, onClose, listingId, reportedUserId, listingTitle }: Props) {
   const t = useTranslations('Report');
   const [selected, setSelected] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -73,7 +75,12 @@ export default function ReportModal({ isOpen, onClose, listingId }: Props) {
               </button>
               <button
                 onClick={async () => {
-                  await supabase.from('reports').insert([{ listing_id: listingId ?? null, reason: selected }]);
+                  await supabase.from('reports').insert([{
+                    listing_id: listingId ?? null,
+                    reason: selected,
+                    reported_user_id: reportedUserId ?? null,
+                    listing_title: listingTitle ?? null,
+                  }]);
                   setSubmitted(true);
                 }}
                 disabled={!selected}

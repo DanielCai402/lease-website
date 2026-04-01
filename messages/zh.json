@@ -4,7 +4,8 @@
     "postListing": "发布房源",
     "signIn": "登录",
     "signOut": "退出",
-    "myListings": "我的房源"
+    "myListings": "我的房源",
+    "adminPanel": "管理后台"
   },
   "Auth": {
     "loginTab": "登录",
@@ -307,6 +308,27 @@
     "cancel": "取消",
     "success": "已收到举报，感谢您的反馈",
     "close": "关闭"
+  },
+  "Admin": {
+    "title": "管理后台",
+    "tabReports": "举报管理",
+    "tabListings": "所有房源",
+    "reportsCount": "共 {count} 条举报",
+    "listingsCount": "共 {count} 条活跃房源",
+    "noReports": "暂无举报记录",
+    "noListings": "暂无房源",
+    "resolveButton": "标记已处理",
+    "resolvedLabel": "已处理",
+    "deleteButton": "删除",
+    "deleteConfirmTitle": "确定要删除这条房源吗？",
+    "deleteConfirmBody": "此操作不可撤销，同时会删除相关图片和视频文件。",
+    "deleteConfirm": "确认删除",
+    "deleteCancel": "取消",
+    "listingDeleted": "帖子已删除",
+    "reportedUser": "被举报用户",
+    "postedUser": "用户",
+    "forbidden": "无权访问",
+    "forbiddenMessage": "您没有管理员权限。"
   },
   "Disclaimer": {
     "title": "使用须知",

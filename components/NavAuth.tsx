@@ -19,6 +19,8 @@ export default function NavAuth() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [unresolvedCount, setUnresolvedCount] = useState(0);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -32,6 +34,50 @@ export default function NavAuth() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false);
+      return;
+    }
+    supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+      .then(({ data }) => {
+        setIsAdmin(data?.role === 'admin');
+      });
+  }, [user]);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setUnresolvedCount(0);
+      return;
+    }
+
+    function fetchCount() {
+      supabase
+        .from('reports')
+        .select('id', { count: 'exact', head: true })
+        .eq('resolved', false)
+        .then(({ count }) => setUnresolvedCount(count ?? 0));
+    }
+
+    fetchCount();
+
+    const channel = supabase
+      .channel('nav-reports-count')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reports' }, (payload) => {
+        console.log('[NavAuth] reports realtime event:', payload.eventType);
+        fetchCount();
+      })
+      .subscribe((status) => {
+        console.log('[NavAuth] reports channel status:', status);
+      });
+
+    return () => { supabase.removeChannel(channel); };
+  }, [isAdmin]);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -60,6 +106,20 @@ export default function NavAuth() {
       >
         {t('myListings')}
       </Link>
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className="relative flex items-center justify-center w-7 h-7 rounded-full hover:bg-zinc-100 transition-colors"
+          title={t('adminPanel')}
+        >
+          <span className="text-base leading-none">🚩</span>
+          {unresolvedCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+              {unresolvedCount > 99 ? '99+' : unresolvedCount}
+            </span>
+          )}
+        </Link>
+      )}
       <button
         onClick={handleSignOut}
         className="hover:text-[#111111] transition-colors"

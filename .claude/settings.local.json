@@ -11,7 +11,8 @@
       "Bash(grep -n \"return \\(\\)\" app/[locale]/post/page.tsx)",
       "Bash(grep -A 20 \"export default function PostPage\" app/[locale]/post/page.tsx)",
       "Bash(grep:*)",
-      "Bash(find /c/Users/Danny/Projects/lease-website -type d ! -path */node_modules/* ! -path */.next/*)"
+      "Bash(find /c/Users/Danny/Projects/lease-website -type d ! -path */node_modules/* ! -path */.next/*)",
+      "Bash(winget upgrade:*)"
     ]
   }
 }
