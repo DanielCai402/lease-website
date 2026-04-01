@@ -106,15 +106,15 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             type="button"
             title={tReport('buttonLabel')}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setReportOpen(true); }}
-            className="flex-shrink-0 text-gray-400 hover:text-red-400 transition-colors leading-none"
+            className="flex-shrink-0 text-gray-400 hover:text-red-400 transition-colors text-xs leading-none"
           >
-            🚩
+            🚩 举报房源
           </button>
         </div>
       </div>
     </Link>
 
-    <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} />
+    <ReportModal isOpen={reportOpen} onClose={() => setReportOpen(false)} listingId={listing.id} />
     </>
   );
 }

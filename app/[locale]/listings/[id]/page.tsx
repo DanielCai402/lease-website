@@ -1,18 +1,12 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { listings, getListingById } from '@/lib/data';
-import { routing } from '@/i18n/routing';
+import { supabase } from '@/lib/supabase';
+import type { Listing } from '@/lib/types';
 import MediaGallery from '@/components/MediaGallery';
 import ContactCard from '@/components/ContactCard';
 import ReportButton from '@/components/ReportButton';
 import { shortDate } from '@/lib/utils';
-
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    listings.map((l) => ({ locale, id: l.id }))
-  );
-}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-US', {
@@ -28,8 +22,15 @@ export default async function ListingPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { id } = await params;
-  const listing = getListingById(id);
-  if (!listing) notFound();
+  const { data } = await supabase.from('listings').select('*').eq('id', id).single();
+  if (!data) notFound();
+  const listing: Listing = {
+    ...data,
+    id: String(data.id),
+    postedAt: data.postedAt ?? data.created_at,
+    images: data.images ?? [],
+    videos: data.videos ?? [],
+  };
 
   const t = await getTranslations('Listing');
 
@@ -73,7 +74,7 @@ export default async function ListingPage({
         >
           ← {t('back')}
         </Link>
-        <ReportButton />
+        <ReportButton listingId={listing.id} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 items-start">
@@ -82,7 +83,7 @@ export default async function ListingPage({
         <div className="min-w-0">
 
           {/* Gallery */}
-          <MediaGallery images={listing.images} title={listing.title} />
+          <MediaGallery images={listing.images} videos={listing.videos} title={listing.title} />
 
           {/* Title + badges + dates */}
           <div className="mt-6">
@@ -228,6 +229,7 @@ export default async function ListingPage({
 
         {/* ── Right column — ContactCard (desktop sidebar + mobile sheet) ── */}
         <ContactCard
+          listingId={listing.id}
           monthlyPrice={listing.monthlyPrice}
           monthlyNegotiable={listing.monthlyNegotiable}
           dailyPrice={listing.dailyPrice}

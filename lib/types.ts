@@ -82,6 +82,7 @@ export interface Listing {
 
   // Media
   images: string[];
+  videos?: string[];
 
   // Contact (all optional)
   wechat?: string;

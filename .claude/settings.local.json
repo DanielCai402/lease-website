@@ -10,7 +10,8 @@
       "Bash(find /c/Users/Danny/Projects/lease-website -maxdepth 3 -type f ! -path */.git/* ! -path */.next/* ! -path */node_modules/*)",
       "Bash(grep -n \"return \\(\\)\" app/[locale]/post/page.tsx)",
       "Bash(grep -A 20 \"export default function PostPage\" app/[locale]/post/page.tsx)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(find /c/Users/Danny/Projects/lease-website -type d ! -path */node_modules/* ! -path */.next/*)"
     ]
   }
 }

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { listings } from '@/lib/data';
+import { supabase } from '@/lib/supabase';
+import type { Listing } from '@/lib/types';
 import ListingCard from '@/components/ListingCard';
 import FilterBar, { FilterValues, DEFAULT_FILTERS } from '@/components/FilterBar';
 import DisclaimerModal from '@/components/DisclaimerModal';
@@ -10,6 +11,26 @@ import DisclaimerModal from '@/components/DisclaimerModal';
 export default function HomePage() {
   const t = useTranslations('Home');
   const [filters, setFilters] = useState<FilterValues>(DEFAULT_FILTERS);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        setListings(
+          (data ?? []).map((row) => ({
+            ...row,
+            id: String(row.id),
+            postedAt: row.postedAt ?? row.created_at,
+            images: row.images ?? [],
+          }))
+        );
+        setLoading(false);
+      });
+  }, []);
 
   const filtered = listings.filter((l) => {
     if (filters.rentalType && l.rentalType !== filters.rentalType) return false;
@@ -60,7 +81,11 @@ export default function HomePage() {
               <p className="text-xs text-amber-800 leading-relaxed">{t('warning')}</p>
             </div>
 
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center py-24">
+                <div className="w-8 h-8 border-2 border-zinc-300 border-t-zinc-700 rounded-full animate-spin" />
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <p className="text-5xl mb-4">🗽</p>
                 <p className="text-xl font-semibold text-zinc-700 mb-1">{t('noResults')}</p>

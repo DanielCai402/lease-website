@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  listingId?: string;
 }
 
 const REASONS = ['reason1', 'reason2', 'reason3', 'reason4', 'reason5'] as const;
 
-export default function ReportModal({ isOpen, onClose }: Props) {
+export default function ReportModal({ isOpen, onClose, listingId }: Props) {
   const t = useTranslations('Report');
   const [selected, setSelected] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -70,7 +72,10 @@ export default function ReportModal({ isOpen, onClose }: Props) {
                 {t('cancel')}
               </button>
               <button
-                onClick={() => setSubmitted(true)}
+                onClick={async () => {
+                  await supabase.from('reports').insert([{ listing_id: listingId ?? null, reason: selected }]);
+                  setSubmitted(true);
+                }}
                 disabled={!selected}
                 className="flex-1 text-sm font-medium px-4 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >

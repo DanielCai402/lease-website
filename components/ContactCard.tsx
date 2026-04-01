@@ -2,8 +2,10 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
+import { supabase } from '@/lib/supabase';
 
 interface Props {
+  listingId: string;
   monthlyPrice?: number;
   monthlyNegotiable: boolean;
   dailyPrice?: number;
@@ -22,6 +24,7 @@ interface Props {
 
 export default function ContactCard(props: Props) {
   const {
+    listingId,
     monthlyPrice, monthlyNegotiable,
     dailyPrice, dailyNegotiable,
     utilitiesIncluded, utilitiesCost, utilitiesUnit,
@@ -47,9 +50,14 @@ export default function ContactCard(props: Props) {
     });
   }
 
-  function submitForm(e: FormEvent) {
+  async function submitForm(e: FormEvent) {
     e.preventDefault();
     if (!wechatId.trim()) { setWechatError(true); return; }
+    await supabase.from('inquiries').insert([{
+      listing_id: listingId,
+      wechat_id: wechatId.trim(),
+      message: message.trim() || null,
+    }]);
     setFormSent(true);
   }
 

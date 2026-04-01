@@ -126,6 +126,7 @@
     "contactNote": "This will be shown to interested renters.",
     "wechatNote": "Renters will reach out by leaving their own WeChat ID on your listing. You don't need to share yours. If you'd like to, we'll display it on your listing.",
     "submit": "Submit listing",
+    "uploading": "Uploading...",
     "sections": {
       "rentalType": "Rental type",
       "basics": "Basic info",

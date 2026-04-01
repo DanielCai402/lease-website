@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { lookupZip } from '@/lib/zip-to-neighborhood';
 import type { ZipEntry as ZipInfo } from '@/lib/zip-to-neighborhood';
 import Tooltip from '@/components/Tooltip';
+import { supabase } from '@/lib/supabase';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,7 @@ function nextDay(iso: string): string {
 
 export default function PostPage() {
   const t = useTranslations('Post');
+  const router = useRouter();
 
   const [form, setForm] = useState<PostForm>(EMPTY);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -114,6 +116,7 @@ export default function PostPage() {
   const [zipStatus, setZipStatus] = useState<'idle' | 'found' | 'notfound'>('idle');
   const [zipInfo, setZipInfo] = useState<ZipInfo | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previewsRef = useRef<string[]>([]);
   previewsRef.current = previews;
@@ -220,18 +223,98 @@ export default function PostPage() {
     return e;
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
-      // Scroll to first error
       setTimeout(() => {
         document.querySelector('[data-error="true"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 50);
       return;
     }
-    setSubmitted(true);
+
+    setUploading(true);
+
+    const neighborhood = zipStatus === 'found' ? zipInfo!.neighborhood : form.manualNeighborhood;
+    const borough = zipStatus === 'found' ? zipInfo!.borough : '';
+    const timestamp = Date.now();
+
+    // ── Upload images ────────────────────────────────────────────────────────
+    const imageFiles = files.filter((f) => !f.type.startsWith('video/'));
+    const videoFiles = files.filter((f) => f.type.startsWith('video/'));
+    const imageUrls: string[] = [];
+    const videoUrls: string[] = [];
+
+    for (const file of imageFiles) {
+      const path = `${timestamp}/${file.name}`;
+      const { error: upErr } = await supabase.storage.from('listing-images').upload(path, file);
+      if (upErr) { setErrors({ submit: upErr.message }); setUploading(false); return; }
+      const { data: { publicUrl } } = supabase.storage.from('listing-images').getPublicUrl(path);
+      imageUrls.push(publicUrl);
+    }
+
+    // ── Upload videos ────────────────────────────────────────────────────────
+    for (const file of videoFiles) {
+      const path = `${timestamp}/${file.name}`;
+      const { error: upErr } = await supabase.storage.from('listing-videos').upload(path, file);
+      if (upErr) { setErrors({ submit: upErr.message }); setUploading(false); return; }
+      const { data: { publicUrl } } = supabase.storage.from('listing-videos').getPublicUrl(path);
+      videoUrls.push(publicUrl);
+    }
+
+    const payload = {
+      title: form.title,
+      description: form.description || null,
+      rentalType: form.rentalType,
+      roomType: form.roomType || null,
+      layout: form.layout,
+      address: form.address,
+      zip: form.zip,
+      neighborhood,
+      borough,
+      availableFrom: form.availableFrom,
+      availableTo: form.availableTo,
+      flexibleDates: form.flexibleDates,
+      monthlyPrice: form.monthlyPrice ? Number(form.monthlyPrice) : null,
+      monthlyNegotiable: form.monthlyNegotiable,
+      dailyPrice: form.dailyPrice ? Number(form.dailyPrice) : null,
+      dailyNegotiable: form.dailyNegotiable,
+      utilitiesIncluded: form.utilitiesIncluded,
+      utilitiesCost: form.utilitiesCost ? Number(form.utilitiesCost) : null,
+      utilitiesUnit: form.utilitiesUnit || null,
+      depositMonthlyMode: form.depositMonthlyMode || null,
+      depositMonthlyConvention: form.depositMonthlyConvention || null,
+      depositMonthlyAmount: form.depositMonthlyAmount ? Number(form.depositMonthlyAmount) : null,
+      depositDailyMode: form.depositDailyMode || null,
+      depositDailyAmount: form.depositDailyAmount ? Number(form.depositDailyAmount) : null,
+      depositDailyPercent: form.depositDailyPercent ? Number(form.depositDailyPercent) : null,
+      furnished: form.furnished,
+      furnitureDetails: form.furnitureDetails || null,
+      parking: form.parking,
+      parkingFee: form.parkingFee ? Number(form.parkingFee) : null,
+      pets: form.pets,
+      roommatesCount: form.roommatesCount ? Number(form.roommatesCount) : null,
+      roommatesGender: form.roommatesGender || null,
+      sharedBathroom: form.sharedBathroom || null,
+      hasPartition: form.hasPartition === 'yes' ? true : form.hasPartition === 'no' ? false : null,
+      hasWindow: form.hasWindow === 'yes' ? true : form.hasWindow === 'no' ? false : null,
+      images: imageUrls,
+      videos: videoUrls,
+      wechat: form.wechat || null,
+      phone: form.phone || null,
+      email: form.email || null,
+      postedAt: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from('listings').insert([payload]);
+    if (error) {
+      setErrors({ submit: error.message });
+      setUploading(false);
+      return;
+    }
+
+    router.push('/');
   }
 
   // ── success screen ───────────────────────────────────────────────────────
@@ -952,11 +1035,18 @@ export default function PostPage() {
           </div>
         </SectionCard>
 
+        {errors.submit && (
+          <p className="text-sm text-red-500 text-center -mb-2">{errors.submit}</p>
+        )}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white font-semibold py-3.5 rounded-xl hover:bg-blue-700 transition-colors text-base"
+          disabled={uploading}
+          className="w-full bg-blue-600 text-white font-semibold py-3.5 rounded-xl hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors text-base flex items-center justify-center gap-2"
         >
-          {t('submit')}
+          {uploading && (
+            <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+          )}
+          {uploading ? t('uploading') : t('submit')}
         </button>
       </form>
 
