@@ -10,7 +10,7 @@ interface Props {
   listingId?: string;
 }
 
-const REASONS = ['reason1', 'reason2', 'reason3', 'reason4', 'reason5'] as const;
+const REASONS = ['fake', 'inaccurate', 'scam', 'duplicate', 'other'] as const;
 
 export default function ReportModal({ isOpen, onClose, listingId }: Props) {
   const t = useTranslations('Report');
