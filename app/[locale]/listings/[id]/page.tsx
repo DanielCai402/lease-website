@@ -22,7 +22,9 @@ export default async function ListingPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { id } = await params;
-  const { data } = await supabase.from('listings').select('*').eq('id', id).single();
+  console.log('Fetching listing id:', id);
+  const { data, error } = await supabase.from('listings').select('*').eq('id', id).single();
+  console.log('Supabase result - data:', JSON.stringify(data), 'error:', JSON.stringify(error));
   if (!data) notFound();
   const listing: Listing = {
     ...data,

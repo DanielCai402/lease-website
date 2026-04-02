@@ -40,6 +40,8 @@ export default function ContactCard(props: Props) {
   const [message, setMessage] = useState('');
   const [formSent, setFormSent] = useState(false);
   const [wechatError, setWechatError] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   function copyWechat() {
@@ -52,12 +54,68 @@ export default function ContactCard(props: Props) {
 
   async function submitForm(e: FormEvent) {
     e.preventDefault();
+    setSubmitError(null);
+
     if (!wechatId.trim()) { setWechatError(true); return; }
+
+    const trimmedMessage = message.trim();
+
+    // ── Layer 1: Rule filtering ───────────────────────────────────────────────
+    if (trimmedMessage) {
+      if (/https?:\/\/|www\./i.test(trimmedMessage)) {
+        setSubmitError(t('contactFormErrorLink'));
+        return;
+      }
+      if (trimmedMessage.length < 5) {
+        setSubmitError(t('contactFormErrorTooShort'));
+        return;
+      }
+      if (trimmedMessage.length > 500) {
+        setSubmitError(t('contactFormErrorTooLong'));
+        return;
+      }
+    }
+
+    // ── Layer 2 + 3: Rate limiting & AI moderation (server-side) ─────────────
+    setSubmitting(true);
+    let moderationReason: string | null = null;
+    try {
+      const res = await fetch('/api/moderate-inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          wechat_id: wechatId.trim(),
+          message: trimmedMessage || null,
+          listing_id: listingId,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.pass) {
+        const keyMap: Record<string, string> = {
+          alreadyContacted: t('contactFormErrorAlreadyContacted'),
+          dailyLimitReached: t('contactFormErrorDailyLimit'),
+          moderationFailed: t('contactFormErrorModeration'),
+        };
+        setSubmitError(keyMap[data.errorKey] ?? t('contactFormErrorModeration'));
+        setSubmitting(false);
+        return;
+      }
+
+      moderationReason = data.reason ?? null;
+    } catch {
+      // Network/server error — fail open so users aren't blocked
+    }
+
+    // ── All layers passed — write to Supabase ─────────────────────────────────
     await supabase.from('inquiries').insert([{
       listing_id: listingId,
-      wechat_id: wechatId.trim(),
-      message: message.trim() || null,
+      wechat_id: wechatId.trim().toLowerCase(),
+      message: trimmedMessage || null,
+      moderation_reason: moderationReason,
     }]);
+    setSubmitting(false);
     setFormSent(true);
   }
 
@@ -186,15 +244,24 @@ export default function ContactCard(props: Props) {
           <textarea
             placeholder={t('contactFormMessagePlaceholder')}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => { setMessage(e.target.value); setSubmitError(null); }}
             rows={3}
             className="w-full border border-zinc-300 rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
           />
+          {submitError && (
+            <p className="text-xs text-red-500 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              ⚠ {submitError}
+            </p>
+          )}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition-colors text-sm"
+            disabled={submitting}
+            className="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-xl hover:bg-blue-700 transition-colors text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {t('contactFormSubmit')}
+            {submitting && (
+              <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+            )}
+            {submitting ? t('contactFormReviewing') : t('contactFormSubmit')}
           </button>
         </form>
       )}

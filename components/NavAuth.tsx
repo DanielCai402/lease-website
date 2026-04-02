@@ -21,6 +21,7 @@ export default function NavAuth() {
   const [ready, setReady] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [unresolvedCount, setUnresolvedCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -79,6 +80,32 @@ export default function NavAuth() {
     return () => { supabase.removeChannel(channel); };
   }, [isAdmin]);
 
+  useEffect(() => {
+    if (!user) {
+      setUnreadMessages(0);
+      return;
+    }
+
+    function fetchUnread() {
+      supabase
+        .from('inquiries')
+        .select('id', { count: 'exact', head: true })
+        .eq('read', false)
+        .then(({ count }) => setUnreadMessages(count ?? 0));
+    }
+
+    fetchUnread();
+
+    const channel = supabase
+      .channel('nav-inquiries-unread')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'inquiries' }, () => {
+        fetchUnread();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.push('/');
@@ -105,6 +132,17 @@ export default function NavAuth() {
         className="hover:text-[#111111] transition-colors"
       >
         {t('myListings')}
+      </Link>
+      <Link
+        href="/messages"
+        className="relative hover:text-[#111111] transition-colors"
+      >
+        {t('messages')}
+        {unreadMessages > 0 && (
+          <span className="absolute -top-2 -right-3 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+            {unreadMessages > 99 ? '99+' : unreadMessages}
+          </span>
+        )}
       </Link>
       {isAdmin && (
         <Link

@@ -5,6 +5,7 @@
     "signIn": "Login",
     "signOut": "Sign Out",
     "myListings": "My Listings",
+    "messages": "Messages",
     "adminPanel": "Admin Panel"
   },
   "Auth": {
@@ -28,6 +29,20 @@
     "delete": "Delete",
     "deleteConfirmTitle": "Delete this listing?",
     "deleteConfirmBody": "This action cannot be undone.",
+    "deleteConfirm": "Delete",
+    "deleteCancel": "Cancel"
+  },
+  "Messages": {
+    "title": "Messages",
+    "empty": "No messages yet",
+    "emptyHint": "When renters reach out, their messages will appear here",
+    "wechat": "WeChat",
+    "clickToRead": "Mark as read",
+    "viewListing": "View listing",
+    "countWithUnread": "{total} messages ({unread} unread)",
+    "countRead": "{total} messages",
+    "deleteButton": "Delete message",
+    "deleteConfirmBody": "Are you sure you want to delete this message?",
     "deleteConfirm": "Delete",
     "deleteCancel": "Cancel"
   },
@@ -129,6 +144,13 @@
     "contactFormMessage": "Message (optional)",
     "contactFormMessagePlaceholder": "Hi, I'm interested in this listing...",
     "contactFormSubmit": "Send",
+    "contactFormReviewing": "Reviewing...",
+    "contactFormErrorLink": "Message cannot contain links",
+    "contactFormErrorTooShort": "Message too short, please describe your rental inquiry",
+    "contactFormErrorTooLong": "Message cannot exceed 500 characters",
+    "contactFormErrorDailyLimit": "Daily message limit reached",
+    "contactFormErrorAlreadyContacted": "You have already contacted this landlord",
+    "contactFormErrorModeration": "Message does not comply with platform guidelines",
     "contactFormSuccess": "Sent! The landlord will reach out soon.",
     "contactLandlord": "Contact Landlord",
     "disclaimer": "NYCRentals does not handle payments or agreements. Please verify all information independently.",

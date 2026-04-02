@@ -5,6 +5,7 @@
     "signIn": "登录",
     "signOut": "退出",
     "myListings": "我的房源",
+    "messages": "消息",
     "adminPanel": "管理后台"
   },
   "Auth": {
@@ -28,6 +29,20 @@
     "delete": "删除",
     "deleteConfirmTitle": "确定要删除这条房源吗？",
     "deleteConfirmBody": "此操作不可撤销。",
+    "deleteConfirm": "确认删除",
+    "deleteCancel": "取消"
+  },
+  "Messages": {
+    "title": "消息",
+    "empty": "暂无留言",
+    "emptyHint": "有租客留言后会在这里显示",
+    "wechat": "微信号",
+    "clickToRead": "标记为已读",
+    "viewListing": "查看房源",
+    "countWithUnread": "{total}条留言（{unread}条未读）",
+    "countRead": "{total}条留言",
+    "deleteButton": "删除留言",
+    "deleteConfirmBody": "确定要删除这条留言吗？",
     "deleteConfirm": "确认删除",
     "deleteCancel": "取消"
   },
@@ -129,6 +144,13 @@
     "contactFormMessage": "留言（可选）",
     "contactFormMessagePlaceholder": "您好，我对这个房源感兴趣……",
     "contactFormSubmit": "发送",
+    "contactFormReviewing": "审核中...",
+    "contactFormErrorLink": "留言不能包含链接",
+    "contactFormErrorTooShort": "留言太短，请描述您的租房需求",
+    "contactFormErrorTooLong": "留言不能超过500字",
+    "contactFormErrorDailyLimit": "今日留言次数已达上限",
+    "contactFormErrorAlreadyContacted": "您已经联系过该房东",
+    "contactFormErrorModeration": "留言内容不符合平台规范，请描述您的租房需求",
     "contactFormSuccess": "已发送！房东会尽快联系您。",
     "contactLandlord": "联系房东",
     "disclaimer": "NYCRentals 不参与任何交易，请自行核实房源信息。",
