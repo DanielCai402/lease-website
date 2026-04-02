@@ -63,7 +63,7 @@ export default function MessagesPage() {
 
       const map = new Map<string, ListingGroup>();
       for (const row of (data ?? [])) {
-        const listingTitle = (row.listings as { title: string } | null)?.title ?? row.listing_id;
+        const listingTitle = (row.listings as { title: string }[] | null)?.[0]?.title ?? row.listing_id;
         if (!map.has(row.listing_id)) {
           map.set(row.listing_id, { listing_id: row.listing_id, listing_title: listingTitle, inquiries: [] });
         }
