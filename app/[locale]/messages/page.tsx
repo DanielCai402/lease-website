@@ -173,25 +173,25 @@ export default function MessagesPage() {
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
+                          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                             {!inq.read && (
                               <span className="inline-block w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
                             )}
-                            <span className={`text-sm font-medium truncate ${inq.read ? 'text-zinc-600' : 'text-zinc-900'}`}>
+                            <span className={`text-sm font-medium break-all ${inq.read ? 'text-zinc-600' : 'text-zinc-900'}`}>
                               {t('wechat')}: {inq.wechat_id}
                             </span>
                           </div>
                           {inq.message && (
-                            <p className="text-sm text-zinc-500 mt-0.5 line-clamp-2">{inq.message}</p>
+                            <p className="text-sm text-zinc-500 mt-0.5 break-words">{inq.message}</p>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-                          <span className="text-xs text-zinc-400">
+                        <div className="flex items-start gap-2 flex-shrink-0 mt-0.5">
+                          <span className="text-xs text-zinc-400 whitespace-nowrap">
                             {formatDate(inq.created_at)}
                           </span>
                           <button
                             onClick={() => setConfirmDeleteId(inq.id)}
-                            className="text-zinc-300 hover:text-red-400 transition-colors"
+                            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-zinc-300 hover:text-red-400 transition-colors"
                             aria-label={t('deleteButton')}
                           >
                             ×

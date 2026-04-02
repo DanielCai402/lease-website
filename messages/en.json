@@ -69,7 +69,9 @@
       "dates": "Dates",
       "checkIn": "Check-in",
       "checkOut": "Check-out",
-      "reset": "Clear filters"
+      "reset": "Clear filters",
+      "show": "Filters",
+      "hide": "Hide filters"
     }
   },
   "Card": {

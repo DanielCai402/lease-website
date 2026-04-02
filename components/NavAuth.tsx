@@ -125,21 +125,23 @@ export default function NavAuth() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       <span className="text-xs text-zinc-400 hidden sm:block">{maskEmail(user.email ?? '')}</span>
       <Link
         href="/my-listings"
-        className="hover:text-[#111111] transition-colors"
+        className="min-h-[44px] flex items-center hover:text-[#111111] transition-colors whitespace-nowrap"
       >
-        {t('myListings')}
+        <span className="hidden sm:inline">{t('myListings')}</span>
+        <span className="sm:hidden text-base" title={t('myListings')}>🏠</span>
       </Link>
       <Link
         href="/messages"
-        className="relative hover:text-[#111111] transition-colors"
+        className="relative min-h-[44px] flex items-center hover:text-[#111111] transition-colors"
       >
-        {t('messages')}
+        <span className="hidden sm:inline">{t('messages')}</span>
+        <span className="sm:hidden text-base" title={t('messages')}>💬</span>
         {unreadMessages > 0 && (
-          <span className="absolute -top-2 -right-3 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+          <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-0.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
             {unreadMessages > 99 ? '99+' : unreadMessages}
           </span>
         )}
@@ -147,7 +149,7 @@ export default function NavAuth() {
       {isAdmin && (
         <Link
           href="/admin"
-          className="relative flex items-center justify-center w-7 h-7 rounded-full hover:bg-zinc-100 transition-colors"
+          className="relative flex items-center justify-center w-8 h-8 min-h-[44px] rounded-full hover:bg-zinc-100 transition-colors"
           title={t('adminPanel')}
         >
           <span className="text-base leading-none">🚩</span>
@@ -160,7 +162,7 @@ export default function NavAuth() {
       )}
       <button
         onClick={handleSignOut}
-        className="hover:text-[#111111] transition-colors"
+        className="hidden sm:block min-h-[44px] hover:text-[#111111] transition-colors"
       >
         {t('signOut')}
       </button>

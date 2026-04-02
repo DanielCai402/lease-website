@@ -507,7 +507,7 @@ export default function PostPage() {
 
         {/* ── Section 4: Availability ───────────────────────────────────── */}
         <SectionCard number={4} title={t('sections.availability')}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label={t('fields.availableFrom')} required error={errors.availableFrom}>
               <input
                 type="date"
@@ -568,7 +568,7 @@ export default function PostPage() {
             <label className="block text-sm font-medium text-zinc-700">
               {t('fields.dailyPrice')}
             </label>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <div className="flex items-center gap-1.5">
                 <input
                   type="number"
@@ -577,7 +577,7 @@ export default function PostPage() {
                   value={form.dailyPrice}
                   onChange={(e) => setField('dailyPrice', e.target.value)}
                   data-error={!!errors.dailyPrice}
-                  className={`w-32 ${inputCls(!!errors.dailyPrice)}`}
+                  className={`w-full sm:w-32 ${inputCls(!!errors.dailyPrice)}`}
                 />
                 <span className="text-sm text-zinc-500 whitespace-nowrap">{t('fields.dailyUnit')}</span>
               </div>
@@ -601,7 +601,7 @@ export default function PostPage() {
             <label className="block text-sm font-medium text-zinc-700">
               {t('fields.monthlyPrice')}
             </label>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <div className="flex items-center gap-1.5">
                 <input
                   type="number"
@@ -610,7 +610,7 @@ export default function PostPage() {
                   value={form.monthlyPrice}
                   onChange={(e) => setField('monthlyPrice', e.target.value)}
                   data-error={!!errors.monthlyPrice}
-                  className={`w-32 ${inputCls(!!errors.monthlyPrice)}`}
+                  className={`w-full sm:w-32 ${inputCls(!!errors.monthlyPrice)}`}
                 />
                 <span className="text-sm text-zinc-500 whitespace-nowrap">{t('fields.monthlyUnit')}</span>
               </div>
@@ -680,13 +680,13 @@ export default function PostPage() {
               {form.monthlyPrice && (
                 <div className="space-y-2.5">
                   <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide">{t('fields.depositMonthlyLabel')}</p>
-                  <div className="flex rounded-lg border border-zinc-200 overflow-hidden text-sm w-fit">
+                  <div className="flex flex-wrap rounded-lg border border-zinc-200 overflow-hidden text-sm w-full sm:w-fit">
                     {(['convention', 'custom'] as const).map((mode) => (
                       <button
                         key={mode}
                         type="button"
                         onClick={() => setField('depositMonthlyMode', mode)}
-                        className={`px-3 py-1.5 transition-colors ${
+                        className={`flex-1 sm:flex-none px-3 py-1.5 transition-colors ${
                           (form.depositMonthlyMode || 'convention') === mode
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-zinc-600 hover:bg-zinc-50'
@@ -730,13 +730,13 @@ export default function PostPage() {
               {form.dailyPrice && (
                 <div className="space-y-2.5">
                   <p className="text-xs font-medium text-zinc-500 uppercase tracking-wide">{t('fields.depositDailyLabel')}</p>
-                  <div className="flex rounded-lg border border-zinc-200 overflow-hidden text-sm w-fit">
+                  <div className="flex flex-wrap rounded-lg border border-zinc-200 overflow-hidden text-sm w-full sm:w-fit">
                     {(['fixed', 'percent', 'none'] as const).map((mode) => (
                       <button
                         key={mode}
                         type="button"
                         onClick={() => setField('depositDailyMode', mode)}
-                        className={`px-3 py-1.5 transition-colors ${
+                        className={`flex-1 sm:flex-none px-3 py-1.5 transition-colors ${
                           (form.depositDailyMode || 'fixed') === mode
                             ? 'bg-blue-600 text-white'
                             : 'bg-white text-zinc-600 hover:bg-zinc-50'
@@ -858,7 +858,7 @@ export default function PostPage() {
           {/* Roommate fields — only for room rental */}
           <Collapsible show={isRoom}>
             <div className="space-y-4 pt-1 border-t border-zinc-100 mt-1">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label={t('fields.totalRoommates')} required error={errors.roommatesCount}>
                   <input
                     type="number"
@@ -896,7 +896,7 @@ export default function PostPage() {
 
               {/* Living room extras */}
               <Collapsible show={isLiving}>
-                <div className="grid grid-cols-2 gap-4 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                   <Field label={t('fields.hasPartition')} required error={errors.hasPartition}>
                     <RadioGroup
                       options={[
@@ -1046,7 +1046,7 @@ export default function PostPage() {
             />
           </Field>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label={t('fields.phone')}>
               <input
                 type="tel"

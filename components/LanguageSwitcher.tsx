@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 const LOCALES = ['zh', 'en'] as const;
 type Locale = (typeof LOCALES)[number];
-const LABELS: Record<Locale, string> = { en: 'EN', zh: '中文' };
+const LABELS: Record<Locale, string> = { en: 'EN', zh: '中' };
 const STORAGE_KEY = 'preferred-locale';
 
 export default function LanguageSwitcher() {

@@ -69,7 +69,9 @@
       "dates": "入住时间",
       "checkIn": "入住日期",
       "checkOut": "退房日期",
-      "reset": "重置筛选"
+      "reset": "重置筛选",
+      "show": "筛选",
+      "hide": "收起筛选"
     }
   },
   "Card": {

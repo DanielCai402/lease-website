@@ -12,6 +12,7 @@ export default function HomePage() {
   const t = useTranslations('Home');
   const [filters, setFilters] = useState<FilterValues>(DEFAULT_FILTERS);
   const [listings, setListings] = useState<Listing[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,20 +60,31 @@ export default function HomePage() {
       <DisclaimerModal />
       {/* Hero */}
       <div className="bg-[#f5f5f5] border-b border-zinc-200">
-        <div className="max-w-6xl mx-auto px-4 py-12">
-          <h1 className="text-4xl font-bold tracking-tight text-[#111111] mb-2">
+        <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-[#111111] mb-2">
             {t('title')}
           </h1>
-          <p className="text-zinc-500 text-lg">
+          <p className="text-zinc-500 text-sm sm:text-lg">
             {t('subtitle')}
           </p>
         </div>
       </div>
 
       {/* Main */}
-      <div className="max-w-6xl mx-auto px-4 py-10">
+      <div className="max-w-6xl mx-auto px-4 py-6 sm:py-10">
+        {/* Mobile filter toggle */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={() => setFilterOpen((v) => !v)}
+            className="flex items-center gap-2 min-h-[44px] px-4 py-2 border border-zinc-300 rounded-xl text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          >
+            <span>⚙</span>
+            <span>{filterOpen ? t('filters.hide') : t('filters.show')}</span>
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
-          <aside className="lg:sticky lg:top-20 lg:self-start">
+          <aside className={`lg:sticky lg:top-20 lg:self-start ${filterOpen ? 'block' : 'hidden'} lg:block`}>
             <FilterBar onChange={setFilters} />
           </aside>
 

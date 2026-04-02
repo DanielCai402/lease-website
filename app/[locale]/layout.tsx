@@ -37,15 +37,15 @@ export default async function LocaleLayout({
           <Link href="/" className="text-lg font-bold tracking-tight text-[#111111]">
             NYC<span className="text-blue-600">Rentals</span>
           </Link>
-          <nav className="flex items-center gap-5 text-sm font-medium text-zinc-600">
-            <Link href="/" className="hover:text-[#111111] transition-colors">
+          <nav className="flex items-center gap-2 sm:gap-5 text-sm font-medium text-zinc-600">
+            <Link href="/" className="hidden sm:block hover:text-[#111111] transition-colors">
               {tNav('browse')}
             </Link>
             <LanguageSwitcher />
             <NavAuth />
             <Link
               href="/post"
-              className="bg-blue-600 text-white px-4 py-1.5 rounded-full hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-3 py-1.5 sm:px-4 rounded-full hover:bg-blue-700 transition-colors whitespace-nowrap"
             >
               {tNav('postListing')}
             </Link>

@@ -154,43 +154,45 @@ export default function MyListingsPage() {
             {listings.map((listing) => (
               <div
                 key={listing.id}
-                className="border border-zinc-200 bg-white rounded-xl p-4 flex items-center gap-4"
+                className="border border-zinc-200 bg-white rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3"
               >
-                {listing.images?.[0] ? (
-                  <img
-                    src={listing.images[0]}
-                    alt={listing.title}
-                    className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
-                  />
-                ) : (
-                  <div className="w-20 h-20 bg-zinc-100 rounded-lg flex-shrink-0 flex items-center justify-center text-zinc-400 text-2xl">
-                    🏠
-                  </div>
-                )}
-
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-sm font-semibold text-zinc-900 truncate mb-0.5">
-                    {listing.title}
-                  </h2>
-                  <p className="text-xs text-zinc-400">
-                    {listing.neighborhood}
-                    {listing.borough ? `, ${listing.borough}` : ''}
-                  </p>
-                  {listing.monthlyPrice && (
-                    <p className="text-xs text-zinc-500 mt-0.5">${listing.monthlyPrice}/mo</p>
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  {listing.images?.[0] ? (
+                    <img
+                      src={listing.images[0]}
+                      alt={listing.title}
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-zinc-100 rounded-lg flex-shrink-0 flex items-center justify-center text-zinc-400 text-2xl">
+                      🏠
+                    </div>
                   )}
+
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-sm font-semibold text-zinc-900 truncate mb-0.5">
+                      {listing.title}
+                    </h2>
+                    <p className="text-xs text-zinc-400">
+                      {listing.neighborhood}
+                      {listing.borough ? `, ${listing.borough}` : ''}
+                    </p>
+                    {listing.monthlyPrice && (
+                      <p className="text-xs text-zinc-500 mt-0.5">${listing.monthlyPrice}/mo</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex gap-2 sm:flex-shrink-0">
                   <Link
                     href={`/edit-listing/${listing.id}`}
-                    className="text-xs border border-zinc-300 text-zinc-700 px-3 py-1.5 rounded-lg hover:bg-zinc-50 transition-colors"
+                    className="flex-1 sm:flex-none text-xs text-center border border-zinc-300 text-zinc-700 px-3 min-h-[44px] flex items-center justify-center rounded-lg hover:bg-zinc-50 transition-colors"
                   >
                     {t('edit')}
                   </Link>
                   <button
                     onClick={() => { setConfirmId(listing.id); setDeleteError(''); }}
-                    className="text-xs border border-red-200 text-red-600 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                    className="flex-1 sm:flex-none text-xs border border-red-200 text-red-600 px-3 min-h-[44px] rounded-lg hover:bg-red-50 transition-colors"
                   >
                     {t('delete')}
                   </button>
